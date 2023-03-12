@@ -1,0 +1,15 @@
+# Hatch
+.virtualenvs/
+config.toml
+
+# Visual Studio Code
+.vscode/
+
+# Outputs
+chapters/
+
+# Python
+__pycache__/
+
+# MacOs
+.DS_Store
