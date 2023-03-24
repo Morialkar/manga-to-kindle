@@ -33,7 +33,7 @@ def _get_all_chapters(chapters_selection: str) -> list[int]:
                 start, end = chapter_sel.split("-")
                 all_chapters.extend(list(range(int(start), int(end) + 1)))
             else:
-                all_chapters.append(int, chapter_sel)
+                all_chapters.append(int(chapter_sel))
         except ValueError:
             typer.echo(f"Invalid chapter selection: '{chapter_sel}'")
             raise typer.Abort()
