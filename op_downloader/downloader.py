@@ -2,7 +2,7 @@ import asyncio
 import io
 import re
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Optional, Sequence
 
 import bs4
 import httpx
@@ -20,33 +20,29 @@ class ChaptersDownloader(object):
     def __init__(
             self,
             client: httpx.AsyncClient,
-            chapters: list[int],
             chapters_output_path: Path = Path("chapters"),
     ) -> None:
         self.client = client
-        self.chapters = chapters
         self.chapters_output_path = chapters_output_path
 
-    async def run(self) -> None:
+    async def run(self, chapters: Sequence[int]) -> None:
         # Obtain URLs from the selected chapters
         all_chapters_urls = await self._get_chapters_urls()
-        urls = [(chapter, all_chapters_urls[chapter])
-                for chapter in self.chapters]
+        urls = [(chapter, all_chapters_urls[chapter]) for chapter in chapters]
 
         self.chapters_output_path.mkdir(parents=True, exist_ok=True)
-        async with asyncio.TaskGroup() as tg:
-            for url in urls:
-                tg.create_task(self._process_chapter(*url))
+        await asyncio.gather(*[self._process_chapter(*url) for url in urls])
 
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
         chapter_anchors = soup.select(
             "div.overflow-hidden > div > div > div.col-span-2 > a")
+
         return {
-            _get_chapter_number(a.attrs["href"].split("/")[-1]):
-            f'{BASE_URL}{a.attrs["href"]}'
+            chapter: f'{BASE_URL}{a.attrs["href"]}'
             for a in chapter_anchors
+            if (chapter := _get_chapter_number(a.attrs["href"].split("/")[-1]))
         }
 
     async def _process_chapter(self, chapter: int, url: str) -> None:
@@ -57,14 +53,10 @@ class ChaptersDownloader(object):
 
         # 2. Get all images present in the chapter page and download them
         im_urls = await self._parse_chapter_pages_urls(res.content.decode())
-        async with asyncio.TaskGroup() as tg:
-            im_tasks = [
-                tg.create_task(self._download_image(im_url))
-                for im_url in im_urls
-            ]
+        ims = await asyncio.gather(
+            *[self._download_image(im_url) for im_url in im_urls])
 
         # 3. Concatenate all images in a single PDF
-        ims = [task.result() for task in im_tasks]
         output_path = self.chapters_output_path / f"{chapter}.pdf"
         ims[0].save(output_path, save_all=True, append_images=ims[1:])
 
@@ -79,7 +71,7 @@ class ChaptersDownloader(object):
         return Image.open(io.BytesIO(res.content)).convert("RGB")
 
 
-def _get_chapter_number(s: str) -> int | None:
+def _get_chapter_number(s: str) -> Optional[int]:
     nums = re.findall(r"([0-9]+)", s)
     try:
         return int(nums[0])

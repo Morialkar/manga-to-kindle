@@ -1,6 +1,4 @@
-import typer
-
-from .cli import run
+from .cli import app
 
 if __name__ == "__main__":
-    typer.run(run)
+    app()

@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "one-piece-manga-downloader"
 description = 'Download One Piece Manga Chapters from TCB Scans'
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 license = "MIT"
 keywords = []
 authors = [
@@ -29,19 +29,32 @@ dependencies = [
 dynamic = ["version"]
 
 [project.scripts]
-one-piece-download = "op_downloader.__main__"
+one-piece-download = "op_downloader.__main__:app"
 
 [project.urls]
-Documentation = "https://github.com/unknown/one-piece-manga-downloader#readme"
-Issues = "https://github.com/unknown/one-piece-manga-downloader/issues"
-Source = "https://github.com/unknown/one-piece-manga-downloader"
+Documentation = "https://github.com/Guillem96/one-piece-manga-downloader#readme"
+Issues = "https://github.com/Guillem96/one-piece-manga-downloader/issues"
+Source = "https://github.com/Guillem96/one-piece-manga-downloader"
 
 [tool.hatch.version]
 path = "op_downloader/__version__.py"
 
 [tool.hatch.envs.default]
-python = "3.11"
+python = "3.9"
 dependencies = [
   "yapf",
   "isort",
+  "mypy",
 ]
+
+[tool.hatch.envs.telegram]
+python = "3.9"
+dependencies = [
+  "yapf",
+  "isort",
+  "mypy",
+  "python-telegram-bot",
+  "aws-lambda-typing",
+  "typing_extensions"
+]
+
