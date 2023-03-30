@@ -3,7 +3,6 @@
 
 # Hatch
 .virtualenvs/
-config.toml
 
 # Visual Studio Code
 .vscode/

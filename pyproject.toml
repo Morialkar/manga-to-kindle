@@ -45,16 +45,13 @@ dependencies = [
   "yapf",
   "isort",
   "mypy",
+  "pre-commit",
 ]
 
 [tool.hatch.envs.telegram]
 python = "3.9"
-dependencies = [
-  "yapf",
-  "isort",
-  "mypy",
+extra_dependencies = [
   "python-telegram-bot",
   "aws-lambda-typing",
   "typing_extensions"
 ]
-

@@ -8,5 +8,3 @@ curl \
     --url https://api.telegram.org/bot$1/setWebhook \
     --header 'content-type: application/json' \
     --data "{\"url\": \"${URL}\"}"
-
-

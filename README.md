@@ -26,7 +26,7 @@ Options:
 
 [![](https://img.shields.io/badge/-Telegram-9cf?logo=telegram)](https://t.me/one_piece_manga_downloader_bot)
 
-Access the bot [HERE](https://t.me/one_piece_manga_downloader_bot) or by 
+Access the bot [HERE](https://t.me/one_piece_manga_downloader_bot) or by
 clicking the shield.
 
 ![bot-help](imgs/tg-bot-help.png)
@@ -35,13 +35,13 @@ clicking the shield.
 
 > The Telegram Bot it's already deployed and available for everyone [here](https://t.me/one_piece_manga_downloader_bot)!
 
-> ⚠️ This guide will deploy the bot in your AWS account and it will become available 
-> in Telegram as a completely different one. 
+> ⚠️ This guide will deploy the bot in your AWS account and it will become available
+> in Telegram as a completely different one.
 
 Requirements:
 
 - Docker installed. Helps with the AWS Lambda function package creation 🐳
-- AWS credentials setup 
+- AWS credentials setup
 - Your Telegram Bot's token
 
 1. Move inside the `telegram-bot` directory:

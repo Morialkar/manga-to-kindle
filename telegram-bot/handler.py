@@ -43,7 +43,7 @@ You can ask me any of this commands:
   • `/help`: Sends this message
   • `/download \<chapter number\>`: Download a one piece manga chapter
 
-All the chapters I provide are downloaded from [TCB Scans](https://tcbscans.carrd.co/)\. 
+All the chapters I provide are downloaded from [TCB Scans](https://tcbscans.carrd.co/)\.
 So shotout to them\!
 """
 

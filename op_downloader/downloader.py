@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import io
 import re
 from pathlib import Path
@@ -13,7 +14,7 @@ BASE_URL = "https://onepiecechapters.com"
 
 class ChaptersDownloader(object):
     """Downloads One Piece Chapters from TCB Scans.
-    
+
     The chapters are stored in PDF format under the `chapters_output_path`.
     """
 
@@ -49,16 +50,21 @@ class ChaptersDownloader(object):
         # Runs the end 2 end for a single chapter
 
         # 1. Get all chapter HTML
-        res = await self.client.get(url)
+        res = await self.client.get(url, timeout=10)
 
         # 2. Get all images present in the chapter page and download them
         im_urls = await self._parse_chapter_pages_urls(res.content.decode())
-        ims = await asyncio.gather(
+        ims: Sequence[Image.Image] = await asyncio.gather(
             *[self._download_image(im_url) for im_url in im_urls])
 
         # 3. Concatenate all images in a single PDF
         output_path = self.chapters_output_path / f"{chapter}.pdf"
-        ims[0].save(output_path, save_all=True, append_images=ims[1:])
+        await asyncio.get_running_loop().run_in_executor(
+            None,
+            functools.partial(ims[0].save,
+                              output_path,
+                              save_all=True,
+                              append_images=ims[1:]))
 
     async def _parse_chapter_pages_urls(self, html: str) -> list[str]:
         # Obtain Image urls of the chapter pages
@@ -67,8 +73,10 @@ class ChaptersDownloader(object):
 
     async def _download_image(self, url: str) -> Image.Image:
         # Download image and convert into an in-memory Pillow image
-        res = await self.client.get(url)
-        return Image.open(io.BytesIO(res.content)).convert("RGB")
+        res = await self.client.get(url, timeout=10)
+        im = await asyncio.get_running_loop().run_in_executor(
+            None, Image.open, io.BytesIO(res.content))
+        return im.convert("RGB")
 
 
 def _get_chapter_number(s: str) -> Optional[int]:

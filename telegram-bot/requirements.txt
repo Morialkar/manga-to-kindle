@@ -1,7 +1,7 @@
+aws-lambda-typing
+beautifulsoup4
+httpx
 Pillow
 python-telegram-bot
-httpx
-beautifulsoup4
 toml
-aws-lambda-typing
 typing_extensions
