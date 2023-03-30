@@ -1,0 +1,31 @@
+service: one-piece-manga-downloader-tg-bot
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: eu-west-2
+  versionFunctions: false
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+
+package:
+  patterns:
+    - ../op_downloader/**
+
+functions:
+  onePieceMangeDownloader:
+    handler: handler.main
+    timeout: 10
+    environment:
+      BOT_USERNAME: one_piece_manga_downloader_bot
+      BOT_TOKEN: ${env:BOT_TOKEN}
+    events:
+      - http:
+          path: ${env:API_PATH, "download-one-piece"}
+          method: post
+          cors: true
