@@ -24,7 +24,8 @@ dependencies = [
   "beautifulsoup4",
   "toml",
   "Pillow",
-  "typer"
+  "typer",
+  "aiocache"
 ]
 dynamic = ["version"]
 
@@ -55,3 +56,6 @@ extra_dependencies = [
   "aws-lambda-typing",
   "typing_extensions"
 ]
+
+[tool.mypy]
+ignore_missing_imports = true

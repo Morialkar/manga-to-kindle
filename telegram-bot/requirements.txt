@@ -1,3 +1,4 @@
+aiocache
 aws-lambda-typing
 beautifulsoup4
 httpx

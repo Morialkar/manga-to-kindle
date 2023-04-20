@@ -5,11 +5,15 @@ import re
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
+import aiocache
 import bs4
 import httpx
 from PIL import Image
 
+from .exceptions import ChapterNotFoundError
+
 BASE_URL = "https://onepiecechapters.com"
+_DEFAULT_CACHE_TIME = 20 * 60
 
 
 class ChaptersDownloader(object):
@@ -26,14 +30,21 @@ class ChaptersDownloader(object):
         self.client = client
         self.chapters_output_path = chapters_output_path
 
-    async def run(self, chapters: Sequence[int]) -> None:
+    async def run(self, chapters: Sequence[int]) -> Sequence[Path]:
         # Obtain URLs from the selected chapters
         all_chapters_urls = await self._get_chapters_urls()
-        urls = [(chapter, all_chapters_urls[chapter]) for chapter in chapters]
+        urls = []
+        for chapter in chapters:
+            try:
+                urls.append((chapter, all_chapters_urls[chapter]))
+            except KeyError:
+                raise ChapterNotFoundError(chapter)
 
         self.chapters_output_path.mkdir(parents=True, exist_ok=True)
-        await asyncio.gather(*[self._process_chapter(*url) for url in urls])
+        return await asyncio.gather(
+            *[self._process_chapter(*url) for url in urls])
 
+    @aiocache.cached(ttl=_DEFAULT_CACHE_TIME)
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
@@ -46,8 +57,13 @@ class ChaptersDownloader(object):
             if (chapter := _get_chapter_number(a.attrs["href"].split("/")[-1]))
         }
 
-    async def _process_chapter(self, chapter: int, url: str) -> None:
+    async def _process_chapter(self, chapter: int, url: str) -> Path:
         # Runs the end 2 end for a single chapter
+
+        # 0. If the chapter already exists, skip the download
+        output_path = self.chapters_output_path / f"{chapter}.pdf"
+        if output_path.exists():
+            return output_path
 
         # 1. Get all chapter HTML
         res = await self.client.get(url, timeout=10)
@@ -58,13 +74,13 @@ class ChaptersDownloader(object):
             *[self._download_image(im_url) for im_url in im_urls])
 
         # 3. Concatenate all images in a single PDF
-        output_path = self.chapters_output_path / f"{chapter}.pdf"
         await asyncio.get_running_loop().run_in_executor(
             None,
             functools.partial(ims[0].save,
                               output_path,
                               save_all=True,
                               append_images=ims[1:]))
+        return output_path
 
     async def _parse_chapter_pages_urls(self, html: str) -> list[str]:
         # Obtain Image urls of the chapter pages

@@ -18,18 +18,18 @@ repos:
       - id: yapf
         name: Running yapf
         language: system
-        entry: hatch --config config.toml run yapf -i
+        entry: hatch run yapf -i
         types: [python]
       - id: isort
         name: Running isort
         stages: [commit]
         language: system
-        entry: hatch --config config.toml run isort
+        entry: hatch run isort
         types: [python]
       - id: mypy
         name: Running mypy
         stages: [commit]
         language: system
-        entry: hatch --config config.toml run telegram:mypy
+        entry: hatch run telegram:mypy
         args: [--install-types, --non-interactive]
         types: [python]

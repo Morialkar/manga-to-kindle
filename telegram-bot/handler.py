@@ -17,6 +17,7 @@ from telegram.ext import (Application, CommandHandler, ContextTypes,
 from typing_extensions import TypeGuard
 
 from op_downloader.downloader import ChaptersDownloader
+from op_downloader.exceptions import ChapterNotFoundError
 
 # Logging
 LOGGER = logging.getLogger(__name__)
@@ -37,7 +38,6 @@ CHARACTERS = ("🍖🍖😁🍖🍖", "🍺⚔😏⚔🍺", "🍊💰😜💰�
 
 HELP_MSG = """
 ❓❓❓
-You can ask me any of this commands:
 
   • `/start`: Get a warm welcome message\!
   • `/help`: Sends this message
@@ -58,7 +58,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     msg = "\n".join([
         f"👋🏼👋🏼👋🏼 Hi {update.effective_user.mention_markdown_v2()}\!",
         "Welcome to One Piece Manga Bot Downloader\!",
-        "Read the below instructions on how to ask me an specific chapter\.",
+        "Read the below instructions to learn how to download a chapter\.",
+        "Let's set sail for the Grand Line\!"
     ])
     await update.message.reply_markdown_v2(msg)
     await update.message.reply_markdown_v2(HELP_MSG)
@@ -90,18 +91,17 @@ async def download_command(update: Update,
         return
 
     character = random.choice(CHARACTERS)  # Easter egg random character
-    chapter_path = CHAPTERS_OUT_PATH / f"{chapter}.pdf"
-    if chapter_path.exists():
-        await update.message.reply_document(
-            str(chapter_path),
-            caption=f"{character} Here you have your chapter, enjoy it!")
-        return
 
     async with httpx.AsyncClient() as client:
         cd = ChaptersDownloader(client, chapters_output_path=CHAPTERS_OUT_PATH)
         await update.message.reply_text(
             f"⏳ Downloading chapter {chapter}, please wait...")
-        await cd.run([chapter])
+        try:
+            [chapter_path] = await cd.run([chapter])
+        except ChapterNotFoundError as err:
+            await update.message.reply_text(
+                f"❌ Chapter {err.chapter} is not yet avaialble.")
+            return
 
     await update.message.reply_document(
         str(chapter_path),
