@@ -1,0 +1,14 @@
+name: Check Python Formatting
+
+on: [tags] # TODO: On tags
+# TODO: Add aws variables and BOT_TOKEN variable in github actions variables
+jobs:
+  yapf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node # TODO: Setup node and npm
+      - name: Install node packages
+        run: cd telegram-bot && npm install
+      - name: Deploy telegram bot
+        run: cd telegram-bot && sh deploy.sh ${BOT_TOKEN}

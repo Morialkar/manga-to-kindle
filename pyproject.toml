@@ -47,6 +47,7 @@ dependencies = [
   "isort",
   "mypy",
   "pre-commit",
+  "pytest",
 ]
 
 [tool.hatch.envs.telegram]
