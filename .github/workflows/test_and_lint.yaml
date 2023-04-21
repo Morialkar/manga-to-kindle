@@ -1,6 +1,9 @@
 name: Check Python Formatting
 
-on: [tags]
+on:
+  push:
+    branches:
+      - main
 jobs:
   linting_and_testing:
     runs-on: ubuntu-latest
