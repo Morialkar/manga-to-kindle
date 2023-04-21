@@ -20,11 +20,11 @@ jobs:
           pip install hatch
           hatch run true
       - name: Check yapf Formatting
-        run: hatch run yapf -r -d viz_cookiecutter
+        run: hatch run yapf -r -d op_downloader telegram-bot
       - name: Check isort Formatting
-        run: hatch run isort --check-only viz_cookiecutter
+        run: hatch run isort --check-only op_downloader telegram-bot
       - name: Check mypy Formatting
-        run: hatch run mypy --install-types --non-interactive viz_cookiecutter
+        run: hatch run mypy --install-types --non-interactive op_downloader telegram-bot
       - name: Run pytest
         run: pytest
 
