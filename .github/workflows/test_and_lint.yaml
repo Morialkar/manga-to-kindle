@@ -49,4 +49,4 @@ jobs:
       - name: Install packages
         run: cd telegram-bot && npm install -g serverless && npm install
       - name: Deploy telegram bot
-        run: cd telegram-bot && sh deploy.sh
+        run: cd telegram-bot && sh deploy.sh ${{ secrets.TELEGRAM_BOT_TOKEN }}
