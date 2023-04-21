@@ -26,7 +26,7 @@ jobs:
       - name: Check mypy Formatting
         run: hatch run mypy --install-types --non-interactive op_downloader telegram-bot
       - name: Run pytest
-        run: hatch runpytest
+        run: hatch run pytest
 
   deployment:
     needs: linting_and_testing
