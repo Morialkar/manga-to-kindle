@@ -1,14 +1,48 @@
 name: Check Python Formatting
 
-on: [tags] # TODO: On tags
-# TODO: Add aws variables and BOT_TOKEN variable in github actions variables
+on: [tags]
 jobs:
-  yapf:
+  linting_and_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Ensure latest pip
+        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: |
+          pip install hatch
+          hatch run true
+      - name: Check yapf Formatting
+        run: hatch run yapf -r -d viz_cookiecutter
+      - name: Check isort Formatting
+        run: hatch run isort --check-only viz_cookiecutter
+      - name: Check mypy Formatting
+        run: hatch run mypy --install-types --non-interactive viz_cookiecutter
+      - name: Run pytest
+        run: pytest
+
+  deployment:
+    needs: linting_and_testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node # TODO: Setup node and npm
-      - name: Install node packages
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+      - name: Install packages
         run: cd telegram-bot && npm install
       - name: Deploy telegram bot
-        run: cd telegram-bot && sh deploy.sh ${BOT_TOKEN}
+        run: cd telegram-bot && sh deploy.sh
