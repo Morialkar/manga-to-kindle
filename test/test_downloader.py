@@ -1,10 +1,12 @@
 import asyncio
 from pathlib import Path
 from typing import Sequence
-from op_downloader.downloader import ChaptersDownloader
-from op_downloader.exceptions import ChapterNotFoundError
+
 import httpx
 import pytest
+
+from op_downloader.downloader import ChaptersDownloader
+from op_downloader.exceptions import ChapterNotFoundError
 
 
 def test_download_runs_successfully(
