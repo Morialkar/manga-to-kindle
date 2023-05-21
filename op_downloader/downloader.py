@@ -12,7 +12,7 @@ from PIL import Image
 
 from .exceptions import ChapterNotFoundError
 
-BASE_URL = "https://onepiecechapters.com"
+BASE_URL = "https://tcbscans.com"
 _DEFAULT_CACHE_TIME = 20 * 60
 
 
@@ -47,6 +47,7 @@ class ChaptersDownloader(object):
     @aiocache.cached(ttl=_DEFAULT_CACHE_TIME)
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
+
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
         chapter_anchors = soup.select(
             "div.overflow-hidden > div > div > div.col-span-2 > a")
