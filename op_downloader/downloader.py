@@ -23,9 +23,9 @@ class ChaptersDownloader(object):
     """
 
     def __init__(
-        self,
-        client: httpx.AsyncClient,
-        chapters_output_path: Path = Path("chapters"),
+            self,
+            client: httpx.AsyncClient,
+            chapters_output_path: Path = Path("chapters"),
     ) -> None:
         self.client = client
         self.chapters_output_path = chapters_output_path
@@ -41,15 +41,15 @@ class ChaptersDownloader(object):
                 raise ChapterNotFoundError(chapter)
 
         self.chapters_output_path.mkdir(parents=True, exist_ok=True)
-        return await asyncio.gather(*[self._process_chapter(*url) for url in urls])
+        return await asyncio.gather(
+            *[self._process_chapter(*url) for url in urls])
 
     @aiocache.cached(ttl=_DEFAULT_CACHE_TIME)
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
         chapter_anchors = soup.select(
-            "div.overflow-hidden > div > div > div.col-span-2 > a"
-        )
+            "div.overflow-hidden > div > div > div.col-span-2 > a")
 
         return {
             chapter: f'{BASE_URL}{a.attrs["href"]}'
@@ -71,15 +71,15 @@ class ChaptersDownloader(object):
         # 2. Get all images present in the chapter page and download them
         im_urls = await self._parse_chapter_pages_urls(res.content.decode())
         ims: Sequence[Image.Image] = await asyncio.gather(
-            *[self._download_image(im_url) for im_url in im_urls]
-        )
+            *[self._download_image(im_url) for im_url in im_urls])
 
         # 3. Concatenate all images in a single PDF
         await asyncio.get_running_loop().run_in_executor(
             None,
-            functools.partial(
-                ims[0].save, output_path, save_all=True, append_images=ims[1:]
-            ),
+            functools.partial(ims[0].save,
+                              output_path,
+                              save_all=True,
+                              append_images=ims[1:]),
         )
         return output_path
 
@@ -92,8 +92,7 @@ class ChaptersDownloader(object):
         # Download image and convert into an in-memory Pillow image
         res = await self.client.get(url, timeout=10)
         im = await asyncio.get_running_loop().run_in_executor(
-            None, Image.open, io.BytesIO(res.content)
-        )
+            None, Image.open, io.BytesIO(res.content))
         return im.convert("RGB")
 
 

@@ -69,19 +69,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not _has_message_and_user(update):
         raise ValueError("invalid update")
 
-    msg = "\n".join(
-        [
-            f"👋🏼👋🏼👋🏼 Hi {update.effective_user.mention_markdown_v2()}\!",
-            "Welcome to One Piece Manga Bot Downloader\!",
-            "Read the below instructions to learn how to download a chapter\.",
-            "Let's set sail for the Grand Line\!",
-        ]
-    )
+    msg = "\n".join([
+        f"👋🏼👋🏼👋🏼 Hi {update.effective_user.mention_markdown_v2()}\!",
+        "Welcome to One Piece Manga Bot Downloader\!",
+        "Read the below instructions to learn how to download a chapter\.",
+        "Let's set sail for the Grand Line\!",
+    ])
     await update.message.reply_markdown_v2(msg)
     await update.message.reply_markdown_v2(HELP_MSG)
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def help_command(update: Update,
+                       context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     if not _has_message_and_user(update):
         raise ValueError("invalid update")
@@ -89,7 +88,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_markdown_v2(HELP_MSG)
 
 
-async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def download_command(update: Update,
+                           context: ContextTypes.DEFAULT_TYPE) -> None:
     if not _has_message_and_user(update):
         raise ValueError("invalid update")
 
@@ -100,7 +100,8 @@ async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     try:
         chapter = int(chapter_txt)
     except ValueError:
-        await update.message.reply_text(f"❌ Invalid chapter number: {chapter_txt}...")
+        await update.message.reply_text(
+            f"❌ Invalid chapter number: {chapter_txt}...")
         return
 
     character = random.choice(CHARACTERS)  # Easter egg random character
@@ -108,35 +109,33 @@ async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     async with httpx.AsyncClient(follow_redirects=True) as client:
         cd = ChaptersDownloader(client, chapters_output_path=CHAPTERS_OUT_PATH)
         await update.message.reply_text(
-            f"⏳ Downloading chapter {chapter}, please wait..."
-        )
+            f"⏳ Downloading chapter {chapter}, please wait...")
         try:
             [chapter_path] = await cd.run([chapter])
         except ChapterNotFoundError as err:
             await update.message.reply_text(
-                f"❌ Chapter {err.chapter} is not yet avaialble."
-            )
+                f"❌ Chapter {err.chapter} is not yet avaialble.")
             return
 
     await update.message.reply_document(
-        str(chapter_path), caption=f"{character} Here you have your chapter, enjoy it!"
-    )
+        str(chapter_path),
+        caption=f"{character} Here you have your chapter, enjoy it!")
 
 
-async def no_valid_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def no_valid_message(update: Update,
+                           context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     if not _has_message_and_user(update):
         raise ValueError("invalid update")
 
     await update.message.reply_text(
-        "❌ I can't help you, seems you sent an invalid command..."
-    )
+        "❌ I can't help you, seems you sent an invalid command...")
 
 
-async def unexpected_error_handler(
-    update: Optional[Update], context: ContextTypes.DEFAULT_TYPE
-) -> None:
-    await update.message.reply_text("🐛 Unexpected error found...")  # type: ignore
+async def unexpected_error_handler(update: Optional[Update],
+                                   context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("🐛 Unexpected error found..."
+                                    )  # type: ignore
     await update.message.reply_text(  # type: ignore
         context.error.with_traceback(),  # type: ignore
     )
@@ -145,7 +144,8 @@ async def unexpected_error_handler(
 async def setup_application() -> Application:
     global APPLICATION
     if APPLICATION is None:
-        APPLICATION = Application.builder().token(os.environ["BOT_TOKEN"]).build()
+        APPLICATION = Application.builder().token(
+            os.environ["BOT_TOKEN"]).build()
 
         # Command handlers
         APPLICATION.add_handler(CommandHandler("start", start))
@@ -157,17 +157,15 @@ async def setup_application() -> Application:
 
         # Fallback invalid command
         APPLICATION.add_handler(
-            MessageHandler(filters.TEXT & ~filters.COMMAND, no_valid_message)
-        )
+            MessageHandler(filters.TEXT & ~filters.COMMAND, no_valid_message))
 
         await APPLICATION.initialize()
 
     return APPLICATION
 
 
-def main(
-    event: events.APIGatewayProxyEventV2, ctx: context_.Context
-) -> responses.APIGatewayProxyResponseV2:
+def main(event: events.APIGatewayProxyEventV2,
+         ctx: context_.Context) -> responses.APIGatewayProxyResponseV2:
     # Parse HTTP request body
     body = json.loads(event["body"])
     LOGGER.debug(f"Request body: {body}")
