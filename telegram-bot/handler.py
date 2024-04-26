@@ -12,13 +12,8 @@ import httpx
 from aws_lambda_typing import context as context_
 from aws_lambda_typing import events, responses
 from telegram import Message, Update, User
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    ContextTypes,
-    MessageHandler,
-    filters,
-)
+from telegram.ext import (Application, CommandHandler, ContextTypes,
+                          MessageHandler, filters)
 from typing_extensions import TypeGuard
 
 from op_downloader.downloader import ChaptersDownloader
