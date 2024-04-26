@@ -134,8 +134,10 @@ async def no_valid_message(update: Update,
 
 async def unexpected_error_handler(update: Optional[Update],
                                    context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("🐛 Unexpected error found...")  # type: ignore
-    await update.message.reply_text(context.error.with_traceback())  # type: ignore
+    await update.message.reply_text(  # type: ignore
+        "🐛 Unexpected error found...")
+    await update.message.reply_text(  # type: ignore
+        context.error.with_traceback())
 
 
 async def setup_application() -> Application:
