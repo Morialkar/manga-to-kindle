@@ -47,7 +47,9 @@ class ChaptersDownloader(object):
     @aiocache.cached(ttl=_DEFAULT_CACHE_TIME)
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
+        print("Get chapter urls",res)
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
+        print(res.content)
         chapter_anchors = soup.select(
             "div.overflow-hidden > div > div > div.col-span-2 > a")
 
