@@ -1,31 +1,29 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.19"]
 build-backend = "hatchling.build"
 
 [project]
-name = "one-piece-manga-downloader"
-description = 'Download One Piece Manga Chapters from TCB Scans'
-readme = "README.md"
-requires-python = ">=3.9"
-license = "MIT"
-keywords = []
-authors = [
-  { name = "Guillem96", email = "guillem.orellana@gmail.com" },
-]
-classifiers = [
-  "Development Status :: 4 - Beta",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-]
 dependencies = [
   "httpx",
   "beautifulsoup4",
   "toml",
   "Pillow",
   "typer",
-  "aiocache"
+  "aiocache",
+]
+name = "one-piece-manga-downloader"
+description = 'Download One Piece Manga Chapters from TCB Scans'
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = []
+authors = [{ name = "Guillem96", email = "guillem.orellana@gmail.com" }]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
 
@@ -42,20 +40,14 @@ path = "op_downloader/__version__.py"
 
 [tool.hatch.envs.default]
 python = "3.9"
-dependencies = [
-  "yapf",
-  "isort",
-  "mypy",
-  "pre-commit",
-  "pytest",
-]
+dependencies = ["yapf", "isort", "mypy", "pre-commit", "pytest"]
 
 [tool.hatch.envs.telegram]
 python = "3.9"
 extra_dependencies = [
   "python-telegram-bot",
   "aws-lambda-typing",
-  "typing_extensions"
+  "typing_extensions",
 ]
 
 [tool.mypy]

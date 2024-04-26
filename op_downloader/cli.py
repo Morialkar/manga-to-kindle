@@ -8,19 +8,22 @@ from op_downloader.downloader import ChaptersDownloader
 
 _CHAPTERS_ARG = typer.Argument(
     ...,
-    help=("Comma separated chapter numbers you want to download. The "
-          "chapters list also support ranges. For examples, some valid "
-          "chapter selections are: 1,2,3,4 or 1000,1005,1070-1077."))
+    help=(
+        "Comma separated chapter numbers you want to download. The "
+        "chapters list also support ranges. For examples, some valid "
+        "chapter selections are: 1,2,3,4 or 1000,1005,1070-1077."
+    ),
+)
 
-_OUTPUT_OPT = typer.Option(Path("chapters"),
-                           help="Output path for the downloaded chapters.")
+_OUTPUT_OPT = typer.Option(
+    Path("chapters"), help="Output path for the downloaded chapters."
+)
 
 app = typer.Typer()
 
 
 @app.command()
-def run(chapters: str = _CHAPTERS_ARG,
-        ouptut_path: Path = _OUTPUT_OPT) -> None:
+def run(chapters: str = _CHAPTERS_ARG, ouptut_path: Path = _OUTPUT_OPT) -> None:
     all_chapters = _get_all_chapters(chapters)
     typer.echo("Downloading chapters:")
     typer.echo("\n".join(f"▶️ {o}" for o in all_chapters))
@@ -45,6 +48,6 @@ def _get_all_chapters(chapters_selection: str) -> list[int]:
 
 
 async def _run_downloader(chapters: list[int], output_path: Path) -> None:
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         cd = ChaptersDownloader(client, chapters_output_path=output_path)
         await cd.run(chapters)
