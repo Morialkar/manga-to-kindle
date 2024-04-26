@@ -12,7 +12,7 @@ from PIL import Image
 
 from .exceptions import ChapterNotFoundError
 
-BASE_URL = "https://tcbscans.com"
+BASE_URL = "https://tcb-backup.bihar-mirchi.com"
 _DEFAULT_CACHE_TIME = 20 * 60
 
 
