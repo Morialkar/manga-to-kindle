@@ -12,8 +12,13 @@ import httpx
 from aws_lambda_typing import context as context_
 from aws_lambda_typing import events, responses
 from telegram import Message, Update, User
-from telegram.ext import (Application, CommandHandler, ContextTypes,
-                          MessageHandler, filters)
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
+)
 from typing_extensions import TypeGuard
 
 from op_downloader.downloader import ChaptersDownloader
@@ -109,7 +114,7 @@ async def download_command(update: Update,
             [chapter_path] = await cd.run([chapter])
         except ChapterNotFoundError as err:
             await update.message.reply_text(
-                f"❌ Chapter {err.chapter} is not yet avaialble.")
+                f"❌ Chapter {err.chapter} is not yet available.")
             return
 
     await update.message.reply_document(
@@ -129,11 +134,8 @@ async def no_valid_message(update: Update,
 
 async def unexpected_error_handler(update: Optional[Update],
                                    context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("🐛 Unexpected error found..."
-                                    )  # type: ignore
-    await update.message.reply_text(  # type: ignore
-        context.error.with_traceback(),  # type: ignore
-    )
+    await update.message.reply_text("🐛 Unexpected error found...")  # type: ignore
+    await update.message.reply_text(context.error.with_traceback())  # type: ignore
 
 
 async def setup_application() -> Application:
