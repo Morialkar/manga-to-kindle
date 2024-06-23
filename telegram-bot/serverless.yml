@@ -2,7 +2,7 @@ service: one-piece-manga-downloader-tg-bot
 
 provider:
   name: aws
-  runtime: python3.9
+  runtime: python3.10
   region: eu-west-2
   versionFunctions: false
 
