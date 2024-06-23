@@ -12,6 +12,7 @@ chapters/
 
 # Python
 __pycache__/
+.mypy_cache/
 
 # MacOs
 .DS_Store

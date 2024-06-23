@@ -1,4 +1,4 @@
-name: Check Python Formatting
+name: Test and Lint Python
 
 on:
   push:
@@ -14,40 +14,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      - name: Ensure latest pip
-        run: python -m pip install --upgrade pip
-      - name: Install dependencies
-        run: |
-          pip install hatch
-          hatch run true
-      - name: Check yapf Formatting
-        run: hatch run yapf -r -d op_downloader telegram-bot
-      - name: Check isort Formatting
-        run: hatch run isort --check-only op_downloader telegram-bot
-      - name: Check mypy Formatting
-        run: hatch run mypy --install-types --non-interactive op_downloader telegram-bot
-      # - name: Run pytest
-      #   run: hatch run pytest
-
-  deployment:
-    needs: linting_and_testing
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
         with:
-          python-version: "3.9"
-      - uses: actions/setup-node@v3
-        with:
-          node-version: latest
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-      - name: Install packages
-        run: cd telegram-bot && npm install -g serverless && npm install
-      - name: Deploy telegram bot
-        run: cd telegram-bot && sh deploy.sh ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          virtualenvs-create: false
+      - name: Installing dependencies
+        run: poetry install --with dev,lambda --no-root
+      - name: Ruff Check
+        run: poetry run ruff check ticker_info
+      - name: Run pytest
+        run: poetry run pytest

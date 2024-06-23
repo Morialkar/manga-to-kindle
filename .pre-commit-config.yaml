@@ -15,21 +15,15 @@ repos:
 
   - repo: local
     hooks:
-      - id: yapf
-        name: Running yapf
+      - id: ruff
+        name: Running ruff
         language: system
-        entry: hatch run yapf -i
-        types: [python]
-      - id: isort
-        name: Running isort
-        stages: [commit]
-        language: system
-        entry: hatch run isort
+        entry: poetry run ruff check op_downloader telegram-bot
         types: [python]
       - id: mypy
         name: Running mypy
         stages: [commit]
         language: system
-        entry: hatch run telegram:mypy
+        entry: poetry run mypy
         args: [--install-types, --non-interactive]
         types: [python]
