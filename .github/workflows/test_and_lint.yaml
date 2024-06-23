@@ -19,7 +19,7 @@ jobs:
         with:
           virtualenvs-create: false
       - name: Installing dependencies
-        run: poetry install --with dev,lambda --no-root
+        run: poetry install --with dev,lambda
       - name: Ruff Check
         run: poetry run ruff check op_downloader telegram-bot
       - name: Run pytest
