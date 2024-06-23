@@ -27,6 +27,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - name: Install packages
-        run: cd telegram-bot && npm install -g serverless && npm install
+        run: cd telegram-bot && npm install -g serverless@3.39.0 && npm install
       - name: Deploy telegram bot
         run: cd telegram-bot && sh deploy.sh ${{ secrets.TELEGRAM_BOT_TOKEN }}
