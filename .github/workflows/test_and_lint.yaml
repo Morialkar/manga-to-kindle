@@ -21,6 +21,6 @@ jobs:
       - name: Installing dependencies
         run: poetry install --with dev,lambda --no-root
       - name: Ruff Check
-        run: poetry run ruff check ticker_info
+        run: poetry run ruff check op_downloader telegram-bot
       - name: Run pytest
         run: poetry run pytest
