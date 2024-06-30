@@ -38,7 +38,7 @@ pre-commit = "*"
 optional = true
 
 [tool.poetry.group.lambda.dependencies]
-mangum = "*"
+python-telegram-bot = "*"
 aws-lambda-typing = "*"
 typing-extensions = "*"
 
