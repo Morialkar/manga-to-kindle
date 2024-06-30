@@ -48,9 +48,7 @@ class ChaptersDownloader(object):
     @aiocache.cached(ttl=_DEFAULT_CACHE_TIME)
     async def _get_chapters_urls(self) -> Mapping[int, str]:
         res = await self.client.get(f"{BASE_URL}/mangas/5/one-piece")
-        print("Get chapter urls", res)
         soup = bs4.BeautifulSoup(res.content.decode(), "html.parser")
-        print(res.content)
         chapter_anchors = soup.select(
             "div.overflow-hidden > div > div > div.col-span-2 > a"
         )
@@ -90,7 +88,10 @@ class ChaptersDownloader(object):
     async def _parse_chapter_pages_urls(self, html: str) -> list[str]:
         # Obtain Image urls of the chapter pages
         soup = bs4.BeautifulSoup(html, "html.parser")
-        return [im.attrs["src"] for im in soup.select("picture > img")]
+        ims = [im.attrs["src"] for im in soup.select("picture > img")]
+        if not ims:
+            return [im.attrs["src"] for im in soup.select("img")]
+        return ims
 
     async def _download_image(self, url: str) -> Image.Image:
         # Download image and convert into an in-memory Pillow image
