@@ -39,6 +39,8 @@ optional = true
 
 [tool.poetry.group.lambda.dependencies]
 mangum = "*"
+aws-lambda-typing = "*"
+typing-extensions = "*"
 
 [[tool.mypy.overrides]]
 module = "aiocache.*,aws_lambda_typing.*,telegram.*"

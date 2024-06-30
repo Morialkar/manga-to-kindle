@@ -1,5 +1,6 @@
 aiocache==0.12.2 ; python_version >= "3.9" and python_version < "4.0"
 anyio==4.4.0 ; python_version >= "3.9" and python_version < "4.0"
+aws-lambda-typing==2.20.0 ; python_version >= "3.9" and python_version < "4.0"
 beautifulsoup4==4.12.3 ; python_version >= "3.9" and python_version < "4.0"
 certifi==2024.6.2 ; python_version >= "3.9" and python_version < "4.0"
 click==8.1.7 ; python_version >= "3.9" and python_version < "4.0"
