@@ -35,7 +35,7 @@ LOGGER.setLevel(logging.DEBUG)
 LOOP = asyncio.new_event_loop()
 
 # Telegram application context
-APPLICATION = None
+APPLICATION: Optional[Application] = None
 
 # Downloaded chapters directory so they can be re-used
 CHAPTERS_OUT_PATH = Path("/tmp")
