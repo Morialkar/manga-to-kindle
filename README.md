@@ -1,8 +1,7 @@
-# One Piece Manga Downloader
-![](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)
-[![](https://img.shields.io/badge/-Telegram-9cf?logo=telegram)](https://t.me/one_piece_manga_downloader_bot)
+# Manga Downloader to Kindle
 
-Download One Piece Manga Chapters from [TCB Scans](https://onepiecechapters.com/mangas/5/one-piece)
+Based on [one-piece-manga-downloader](https://github.com/Guillem96/one-piece-manga-downloader) by Guillem96
+Download Manga Chapters from [TCB Scans](https://onepiecechapters.com/mangas/5/one-piece)
 
 ## CLI Usage
 
